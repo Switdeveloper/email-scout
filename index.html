@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Scout - Email Campaign Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --secondary: #22c55e;
+            --accent: #f59e0b;
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --surface-hover: #273549;
+            --border: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --danger: #ef4444;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .logo span {
+            color: var(--primary);
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .stat-box {
+            background: var(--surface);
+            padding: 0.75rem 1.25rem;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .stat-box .label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .stat-box .value {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--secondary);
+        }
+
+        /* Main Grid */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Cards */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.25rem;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-title .icon {
+            width: 28px;
+            height: 28px;
+            background: var(--primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+        }
+
+        /* Input Section */
+        .input-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            background: var(--bg);
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 1rem;
+            color: var(--text-primary);
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.9rem;
+            resize: vertical;
+            transition: border-color 0.2s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        textarea::placeholder {
+            color: var(--text-secondary);
+        }
+
+        /* File Upload */
+        .file-upload {
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .file-upload:hover {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .file-upload.dragover {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+            transform: scale(1.02);
+        }
+
+        .file-upload input {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-upload .icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .file-upload p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .file-upload .highlight {
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .file-name {
+            margin-top: 0.75rem;
+            padding: 0.5rem 1rem;
+            background: var(--bg);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: var(--secondary);
+            display: none;
+        }
+
+        .file-name.show {
+            display: block;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.15s;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--bg);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            color: var(--text-primary);
+            border-color: var(--text-secondary);
+        }
+
+        .btn-danger {
+            background: transparent;
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        .btn-danger:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        /* Message Composer */
+        .composer-section {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0.875rem 1rem;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .save-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--secondary);
+            margin-top: 0.5rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .save-indicator.show {
+            opacity: 1;
+        }
+
+        /* Email List */
+        .email-list-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .email-count {
+            background: var(--primary);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .email-list {
+            max-height: 500px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .email-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .email-list::-webkit-scrollbar-track {
+            background: var(--bg);
+            border-radius: 3px;
+        }
+
+        .email-list::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+
+        .email-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.875rem 1rem;
+            background: var(--bg);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.15s;
+            border: 1px solid transparent;
+        }
+
+        .email-item:hover {
+            background: var(--surface-hover);
+            transform: translateX(4px);
+            border-color: var(--primary);
+        }
+
+        .email-item.clicked {
+            background: rgba(34, 197, 94, 0.1);
+            border-color: var(--secondary);
+        }
+
+        .email-item.selected {
+            background: rgba(99, 102, 241, 0.15);
+            border-color: var(--primary);
+        }
+
+        .email-number {
+            width: 28px;
+            height: 28px;
+            background: var(--border);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .email-item.clicked .email-number {
+            background: var(--secondary);
+        }
+
+        .email-item.selected .email-number {
+            background: var(--primary);
+        }
+
+        .email-address {
+            flex: 1;
+            font-size: 0.9rem;
+            word-break: break-all;
+        }
+
+        .email-status {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--text-secondary);
+            flex-shrink: 0;
+        }
+
+        .email-item.clicked .email-status {
+            background: var(--secondary);
+        }
+
+        .email-item.selected .email-status {
+            background: var(--primary);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .email-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+
+        .email-actions button {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 4px;
+            transition: all 0.15s;
+        }
+
+        .email-actions button:hover {
+            color: var(--danger);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            font-size: 0.95rem;
+        }
+
+        /* Progress Section */
+        .progress-section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+        }
+
+        .progress-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .progress-title {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .progress-stats {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .progress-stat {
+            text-align: center;
+        }
+
+        .progress-stat .number {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .progress-stat .label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .progress-bar-container {
+            background: var(--bg);
+            border-radius: 10px;
+            height: 24px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), #8b5cf6);
+            border-radius: 10px;
+            transition: width 0.5s ease-out;
+            position: relative;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .progress-percentage {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--secondary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .toast-content p {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .toast-content span {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .header-stats {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .stat-box {
+                padding: 0.5rem 0.75rem;
+            }
+
+            .stat-box .value {
+                font-size: 1rem;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .progress-stats {
+                gap: 1rem;
+            }
+
+            .progress-stat .number {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="logo">
+                <div class="logo-icon">📧</div>
+                <h1>Email<span>Scout</span></h1>
+            </div>
+            <div class="header-stats">
+                <div class="stat-box">
+                    <div class="label">Total Emails</div>
+                    <div class="value" id="totalEmails">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="label">Completed</div>
+                    <div class="value" id="completedEmails">0</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Grid -->
+        <div class="main-grid">
+            <!-- Left Column - Input & Composer -->
+            <div class="left-column">
+                <!-- Email Input Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <div class="icon">📝</div>
+                            Add Emails
+                        </div>
+                    </div>
+                    <div class="input-section">
+                        <textarea id="emailInput" placeholder="Paste emails here (one per line)...
+
+example@email.com
+john.doe@company.com
+contact@business.org"></textarea>
+                        
+                        <div class="file-upload" id="fileUpload">
+                            <input type="file" id="fileInput" accept=".txt,.csv">
+                            <div class="icon">📁</div>
+                            <p><span class="highlight">Click to upload</span> or drag and drop</p>
+                            <p style="font-size: 0.75rem; margin-top: 0.25rem;"> TXT or CSV files</p>
+                            <div class="file-name" id="fileName"></div>
+                        </div>
+
+                        <div class="btn-group">
+                            <button class="btn btn-primary" id="addEmailsBtn">
+                                ✨ Add Emails
+                            </button>
+                            <button class="btn btn-secondary" id="clearAllBtn">
+                                🗑️ Clear All
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Message Composer -->
+                    <div class="composer-section">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <div class="icon">✉️</div>
+                                Message Template
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="subjectInput">Subject Line</label>
+                            <input type="text" id="subjectInput" placeholder="Enter email subject...">
+                        </div>
+                        <div class="form-group">
+                            <label for="bodyInput">Email Body</label>
+                            <textarea id="bodyInput" placeholder="Write your message here...
+
+Use {{email}} to insert the recipient's email address."></textarea>
+                            <div class="save-indicator" id="saveIndicator">
+                                ✓ Draft saved automatically
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Email List -->
+            <div class="right-column">
+                <div class="card" style="height: 100%;">
+                    <div class="email-list-header">
+                        <div class="card-title">
+                            <div class="icon">📋</div>
+                            Email List
+                        </div>
+                        <div class="email-count" id="emailCount">0 emails</div>
+                    </div>
+                    
+                    <div class="email-list" id="emailList">
+                        <div class="empty-state">
+                            <div class="icon">📭</div>
+                            <p>No emails added yet</p>
+                            <p style="font-size: 0.8rem; margin-top: 0.5rem;">Paste emails or upload a file to get started</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Section -->
+        <div class="progress-section">
+            <div class="progress-header">
+                <div class="progress-title">
+                    📊 Campaign Progress
+                </div>
+                <div class="progress-stats">
+                    <div class="progress-stat">
+                        <div class="number" id="progressSent">0</div>
+                        <div class="label">Sent</div>
+                    </div>
+                    <div class="progress-stat">
+                        <div class="number" id="progressRemaining">0</div>
+                        <div class="label">Remaining</div>
+                    </div>
+                    <div class="progress-stat">
+                        <div class="number" style="color: var(--primary);" id="progressPercent">0%</div>
+                        <div class="label">Complete</div>
+                    </div>
+                </div>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progressBar" style="width: 0%;"></div>
+                <span class="progress-percentage" id="progressText">0 of 0</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <div class="toast-icon">✓</div>
+        <div class="toast-content">
+            <p id="toastTitle">Success!</p>
+            <span id="toastMessage">Emails added successfully</span>
+        </div>
+    </div>
+
+    <script>
+        // State Management
+        let emails = [];
+        let selectedEmailIndex = -1;
+
+        // DOM Elements
+        const emailInput = document.getElementById('emailInput');
+        const fileInput = document.getElementById('fileInput');
+        const fileUpload = document.getElementById('fileUpload');
+        const fileName = document.getElementById('fileName');
+        const addEmailsBtn = document.getElementById('addEmailsBtn');
+        const clearAllBtn = document.getElementById('clearAllBtn');
+        const emailList = document.getElementById('emailList');
+        const emailCount = document.getElementById('emailCount');
+        const subjectInput = document.getElementById('subjectInput');
+        const bodyInput = document.getElementById('bodyInput');
+        const saveIndicator = document.getElementById('saveIndicator');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const progressSent = document.getElementById('progressSent');
+        const progressRemaining = document.getElementById('progressRemaining');
+        const progressPercent = document.getElementById('progressPercent');
+        const totalEmailsEl = document.getElementById('totalEmails');
+        const completedEmailsEl = document.getElementById('completedEmails');
+        const toast = document.getElementById('toast');
+        const toastTitle = document.getElementById('toastTitle');
+        const toastMessage = document.getElementById('toastMessage');
+
+        // Email validation regex
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        // Initialize app
+        function init() {
+            loadFromStorage();
+            renderEmails();
+            updateProgress();
+            setupEventListeners();
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Add emails button
+            addEmailsBtn.addEventListener('click', addEmailsFromInput);
+
+            // Clear all button
+            clearAllBtn.addEventListener('click', clearAllEmails);
+
+            // File upload
+            fileInput.addEventListener('change', handleFileUpload);
+
+            // Drag and drop
+            fileUpload.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                fileUpload.classList.add('dragover');
+            });
+
+            fileUpload.addEventListener('dragleave', () => {
+                fileUpload.classList.remove('dragover');
+            });
+
+            fileUpload.addEventListener('drop', (e) => {
+                e.preventDefault();
+                fileUpload.classList.remove('dragover');
+                const file = e.dataTransfer.files[0];
+                if (file) {
+                    processFile(file);
+                }
+            });
+
+            // Auto-save message template
+            subjectInput.addEventListener('input', saveMessageTemplate);
+            bodyInput.addEventListener('input', saveMessageTemplate);
+
+            // Enter key to add emails
+            emailInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && e.ctrlKey) {
+                    addEmailsFromInput();
+                }
+            });
+        }
+
+        // Add emails from textarea
+        function addEmailsFromInput() {
+            const text = emailInput.value.trim();
+            if (!text) {
+                showToast('Warning', 'Please enter some emails first', 'warning');
+                return;
+            }
+
+            const emailLines = text.split('\n').map(line => line.trim()).filter(line => line);
+            let addedCount = 0;
+            let invalidCount = 0;
+
+            emailLines.forEach(line => {
+                // Handle comma-separated emails
+                const emailsInLine = line.split(',').map(e => e.trim());
+                
+                emailsInLine.forEach(email => {
+                    if (email && emailRegex.test(email)) {
+                        if (!emails.find(e => e.email.toLowerCase() === email.toLowerCase())) {
+                            emails.push({
+                                email: email,
+                                clicked: false,
+                                addedAt: new Date().toISOString()
+                            });
+                            addedCount++;
+                        }
+                    } else if (email) {
+                        invalidCount++;
+                    }
+                });
+            });
+
+            if (addedCount > 0) {
+                emailInput.value = '';
+                saveToStorage();
+                renderEmails();
+                updateProgress();
+                showToast('Success', `${addedCount} email(s) added${invalidCount > 0 ? `, ${invalidCount} skipped` : ''}`, 'success');
+            } else if (invalidCount > 0) {
+                showToast('Info', `No valid new emails found, ${invalidCount} skipped`, 'info');
+            }
+        }
+
+        // Handle file upload
+        function handleFileUpload(e) {
+            const file = e.target.files[0];
+            if (file) {
+                processFile(file);
+            }
+        }
+
+        // Process uploaded file
+        function processFile(file) {
+            const reader = new FileReader();
+            
+            reader.onload = (e) => {
+                const content = e.target.result;
+                const fileEmails = content.split(/[\r\n,;]+/).map(e => e.trim()).filter(e => e);
+                
+                let addedCount = 0;
+                fileEmails.forEach(email => {
+                    if (emailRegex.test(email)) {
+                        if (!emails.find(e => e.email.toLowerCase() === email.toLowerCase())) {
+                            emails.push({
+                                email: email,
+                                clicked: false,
+                                addedAt: new Date().toISOString()
+                            });
+                            addedCount++;
+                        }
+                    }
+                });
+
+                if (addedCount > 0) {
+                    fileName.textContent = `✓ Loaded ${addedCount} emails from ${file.name}`;
+                    fileName.classList.add('show');
+                    saveToStorage();
+                    renderEmails();
+                    updateProgress();
+                    showToast('File Loaded', `${addedCount} email(s) added from file`, 'success');
+                } else {
+                    fileName.textContent = 'No valid emails found';
+                    fileName.classList.add('show');
+                    setTimeout(() => fileName.classList.remove('show'), 3000);
+                }
+            };
+
+            reader.readAsText(file);
+        }
+
+        // Render email list
+        function renderEmails() {
+            if (emails.length === 0) {
+                emailList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">📭</div>
+                        <p>No emails added yet</p>
+                        <p style="font-size: 0.8rem; margin-top: 0.5rem;">Paste emails or upload a file to get started</p>
+                    </div>
+                `;
+                emailCount.textContent = '0 emails';
+                return;
+            }
+
+            emailList.innerHTML = emails.map((item, index) => `
+                <div class="email-item ${item.clicked ? 'clicked' : ''} ${selectedEmailIndex === index ? 'selected' : ''}" 
+                     data-index="${index}"
+                     onclick="handleEmailClick(${index})">
+                    <div class="email-number">${index + 1}</div>
+                    <div class="email-address">${escapeHtml(item.email)}</div>
+                    <div class="email-status"></div>
+                    <div class="email-actions">
+                        <button onclick="event.stopPropagation(); removeEmail(${index})" title="Remove">✕</button>
+                    </div>
+                </div>
+            `).join('');
+
+            emailCount.textContent = `${emails.length} email${emails.length !== 1 ? 's' : ''}`;
+        }
+
+        // Handle email click
+        function handleEmailClick(index) {
+            const email = emails[index];
+            const subject = subjectInput.value || 'No Subject';
+            let body = bodyInput.value || '';
+
+            // Replace {{email}} placeholder
+            body = body.replace(/{{email}}/gi, email.email);
+
+            // Create mailto link
+            const mailtoLink = `mailto:${email.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            
+            // Open email client
+            window.location.href = mailtoLink;
+
+            // Mark as clicked
+            emails[index].clicked = true;
+            emails[index].clickedAt = new Date().toISOString();
+
+            selectedEmailIndex = index;
+            saveToStorage();
+            renderEmails();
+            updateProgress();
+
+            showToast('Email Opened', `Opening ${email.email} in your mail client`, 'success');
+        }
+
+        // Remove single email
+        function removeEmail(index) {
+            emails.splice(index, 1);
+            saveToStorage();
+            renderEmails();
+            updateProgress();
+            showToast('Removed', 'Email removed from list', 'info');
+        }
+
+        // Clear all emails
+        function clearAllEmails() {
+            if (emails.length === 0) {
+                showToast('Info', 'No emails to clear', 'info');
+                return;
+            }
+
+            if (confirm('Are you sure you want to clear all emails? This cannot be undone.')) {
+                emails = [];
+                selectedEmailIndex = -1;
+                saveToStorage();
+                renderEmails();
+                updateProgress();
+                showToast('Cleared', 'All emails have been removed', 'success');
+            }
+        }
+
+        // Update progress
+        function updateProgress() {
+            const total = emails.length;
+            const sent = emails.filter(e => e.clicked).length;
+            const remaining = total - sent;
+            const percent = total > 0 ? Math.round((sent / total) * 100) : 0;
+
+            // Update header stats
+            totalEmailsEl.textContent = total;
+            completedEmailsEl.textContent = sent;
+
+            // Update progress bar
+            progressBar.style.width = `${percent}%`;
+            progressText.textContent = `${sent} of ${total}`;
+            progressSent.textContent = sent;
+            progressRemaining.textContent = remaining;
+            progressPercent.textContent = `${percent}%`;
+        }
+
+        // Save message template
+        function saveMessageTemplate() {
+            const template = {
+                subject: subjectInput.value,
+                body: bodyInput.value,
+                savedAt: new Date().toISOString()
+            };
+            localStorage.setItem('emailScoutTemplate', JSON.stringify(template));
+            
+            // Show save indicator
+            saveIndicator.classList.add('show');
+            setTimeout(() => saveIndicator.classList.remove('show'), 2000);
+        }
+
+        // Load from localStorage
+        function loadFromStorage() {
+            // Load emails
+            const savedEmails = localStorage.getItem('emailScoutEmails');
+            if (savedEmails) {
+                try {
+                    emails = JSON.parse(savedEmails);
+                } catch (e) {
+                    emails = [];
+                }
+            }
+
+            // Load message template
+            const savedTemplate = localStorage.getItem('emailScoutTemplate');
+            if (savedTemplate) {
+                try {
+                    const template = JSON.parse(savedTemplate);
+                    subjectInput.value = template.subject || '';
+                    bodyInput.value = template.body || '';
+                } catch (e) {
+                    // Ignore parse errors
+                }
+            }
+        }
+
+        // Save to localStorage
+        function saveToStorage() {
+            localStorage.setItem('emailScoutEmails', JSON.stringify(emails));
+        }
+
+        // Show toast notification
+        function showToast(title, message, type = 'success') {
+            toastTitle.textContent = title;
+            toastMessage.textContent = message;
+            
+            const iconMap = {
+                success: '✓',
+                warning: '⚠',
+                info: 'ℹ',
+                error: '✕'
+            };
+            
+            toast.querySelector('.toast-icon').textContent = iconMap[type] || '✓';
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Reset individual email (double-click to unmark)
+        emailList.addEventListener('dblclick', (e) => {
+            const emailItem = e.target.closest('.email-item');
+            if (emailItem && emailItem.classList.contains('clicked')) {
+                const index = parseInt(emailItem.dataset.index);
+                if (confirm('Mark this email as not sent?')) {
+                    emails[index].clicked = false;
+                    emails[index].clickedAt = null;
+                    saveToStorage();
+                    renderEmails();
+                    updateProgress();
+                    showToast('Reset', 'Email marked as not sent', 'info');
+                }
+            }
+        });
+
+        // Initialize the app
+        init();
+    </script>
+</body>
+</html>
